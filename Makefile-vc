@@ -1,0 +1,25 @@
+OUTPUT=output.png
+PROGRAM=d2d-test.exe
+OBJECTS=d2d-test.obj
+CPPFLAGS=
+CFLAGS=/Od /W4 /WX
+CXXFLAGS=/EHsc
+LDFLAGS=
+LDLIBS=d2d1.lib windowscodecs.lib ole32.lib
+CXX=cl
+
+all: $(OUTPUT)
+
+clean:
+	-del $(OUTPUT) $(PROGRAM) $(OBJECTS)
+
+%.png: $(PROGRAM)
+	$(PROGRAM) $@
+
+%.obj: %.cpp
+	$(CXX) /nologo /c /Fo $@ $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) $<
+
+$(PROGRAM): $(OBJECTS)
+	$(CXX) /nologo $(CFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ $(LDLIBS) /link /OUT:$@
+
+.PHONY: all clean
