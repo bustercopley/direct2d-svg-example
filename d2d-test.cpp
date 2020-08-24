@@ -1,6 +1,3 @@
-// -*- compile-command: "g++ -o d2d-test -municode -O0 -ggdb3 main.cpp -ld2d1
-// -lwindowscodecs -lole32" -*-
-
 #include <cstdio>
 
 #include <comdef.h>
