@@ -8,6 +8,7 @@ CXXFLAGS=/EHsc
 LDFLAGS=
 LDLIBS=d2d1.lib windowscodecs.lib ole32.lib shlwapi.lib
 CXX=cl
+LD=link
 
 all: $(OUTPUT)
 
@@ -18,9 +19,9 @@ $(OUTPUT): $(PROGRAM) $(SVGINPUT)
 	$(PROGRAM) $(OUTPUT) $(SVGINPUT)
 
 %.obj: %.cpp
-	$(CXX) /nologo /c $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) $< /link /OUT:$@
+	$(CXX) /nologo /c $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) $<
 
 $(PROGRAM): $(OBJECTS)
-	$(CXX) /nologo $(CFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ $(LDLIBS) /link /OUT:$@
+	$(LD) /nologo $(LDFLAGS) $^ $(LDLIBS) /OUT:$@
 
 .PHONY: all clean

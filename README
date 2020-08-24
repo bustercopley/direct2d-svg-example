@@ -19,8 +19,8 @@ With MinGW-W64 g++, with SVG (doesn't compile with current release):
 
 With MSVC 2019, with SVG:
 
-   cl /nologo /c /Od /W4 /WX /EHsc d2d-test.cpp /link /OUT:d2d-test.obj
-   cl /nologo /Od /W4 /WX /EHsc  d2d-test.obj d2d1.lib windowscodecs.lib ole32.lib shlwapi.lib /link /OUT:d2d-test.exe
+   cl /nologo /c /Od /W4 /WX /EHsc d2d-test.cpp
+   link /nologo /WX d2d-test.obj d2d1.lib windowscodecs.lib ole32.lib shlwapi.lib /OUT:d2d-test.exe
    d2d-test.exe output.png circle.svg
 
 
