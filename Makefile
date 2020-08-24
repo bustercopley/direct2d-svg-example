@@ -1,11 +1,12 @@
 OUTPUT=output.png
+SVGINPUT=circle.svg
 PROGRAM=d2d-test.exe
 OBJECTS=d2d-test.o
-CPPFLAGS=
+CPPFLAGS=-DNO_SVG
 CFLAGS=-municode -O0 -ggdb3 -Wall -Wextra -Werror
 CXXFLAGS=
 LDFLAGS=
-LDLIBS=-ld2d1 -lwindowscodecs -lole32
+LDLIBS=-ld2d1 -lwindowscodecs -lole32 -lshlwapi
 CXX=g++
 
 all: $(OUTPUT)
@@ -13,8 +14,8 @@ all: $(OUTPUT)
 clean:
 	-del $(OUTPUT) $(PROGRAM) $(OBJECTS)
 
-%.png: $(PROGRAM)
-	$(PROGRAM) $@
+$(OUTPUT): $(PROGRAM) $(SVGINPUT)
+	$(PROGRAM) $(OUTPUT) $(SVGINPUT)
 
 %.o: %.cpp
 	$(CXX) -c -o $@ $(CPPFLAGS) $(CFLAGS) $(CXXFLAGS) $<

@@ -7,6 +7,11 @@
 #include <d2d1_1.h>
 #include <wincodec.h>
 
+#ifndef NO_SVG
+#include <d2d1_3.h>
+#include <shlwapi.h>
+#endif
+
 #define COM_SMARTPTR_TYPEDEF(a) _COM_SMARTPTR_TYPEDEF(a, __uuidof(a))
 #define CHK(hr) check_hresult(hr, __FILE__, __LINE__)
 
@@ -29,7 +34,18 @@ COM_SMARTPTR_TYPEDEF(ID2D1RenderTarget);
 COM_SMARTPTR_TYPEDEF(ID2D1Factory1);
 COM_SMARTPTR_TYPEDEF(ID2D1SolidColorBrush);
 
-void run_test(const wchar_t *filename) {
+#ifndef NO_SVG
+COM_SMARTPTR_TYPEDEF(IStream);
+COM_SMARTPTR_TYPEDEF(ID2D1DeviceContext5);
+COM_SMARTPTR_TYPEDEF(ID2D1SvgDocument);
+#endif
+
+void run_test(const wchar_t *output_filename, const wchar_t *svg_filename) {
+
+#ifdef NO_SVG
+  (void)svg_filename; // Silence warning about unused parameter.
+#endif
+
   // Create a WIC (Windows Imaging Component) factory.
   IWICImagingFactoryPtr WICImagingFactory;
   CHK(WICImagingFactory.CreateInstance(
@@ -67,12 +83,33 @@ void run_test(const wchar_t *filename) {
   D2D1RenderTarget->BeginDraw();
   D2D1RenderTarget->Clear(purple);
   D2D1RenderTarget->DrawLine({10, 10}, {310, 246}, D2D1Brush, 10);
+
+#ifndef NO_SVG
+  if (svg_filename) {
+    // Get an ID2D1Context5.
+    ID2D1DeviceContext5Ptr D2D1Context5;
+    CHK(D2D1RenderTarget->QueryInterface(&D2D1Context5));
+
+    // Open SVG file and create stream.
+    IStreamPtr Stream;
+    CHK(SHCreateStreamOnFileW(
+      svg_filename, STGM_READ | STGM_SHARE_DENY_WRITE, &Stream));
+
+    // Load the SVG document from the stream.
+    ID2D1SvgDocumentPtr SvgDocument;
+    CHK(D2D1Context5->CreateSvgDocument(Stream, {320, 256}, &SvgDocument));
+
+    // Draw the SVG image.
+    D2D1Context5->DrawSvgDocument(SvgDocument);
+  }
+#endif
+
   CHK(D2D1RenderTarget->EndDraw());
 
   // Create a WIC stream.
   IWICStreamPtr WICStream;
   CHK(WICImagingFactory->CreateStream(&WICStream));
-  CHK(WICStream->InitializeFromFilename(filename, GENERIC_WRITE));
+  CHK(WICStream->InitializeFromFilename(output_filename, GENERIC_WRITE));
 
   // Create a WIC bitmap encoder.
   IWICBitmapEncoderPtr WICEncoder;
@@ -92,13 +129,16 @@ void run_test(const wchar_t *filename) {
 }
 
 int wmain(int argc, const wchar_t *argv[]) {
-  if (argc != 2) {
+  if (argc != 2 && argc != 3) {
     return 1;
   }
 
+  const wchar_t *output_filename = argv[1];
+  const wchar_t *svg_filename = argc < 3 ? nullptr : argv[2];
+
   try {
     CHK(CoInitializeEx(nullptr, COINIT_MULTITHREADED | COINIT_DISABLE_OLE1DDE));
-    run_test(argv[1]);
+    run_test(output_filename, svg_filename);
   } catch (...) {
     return 1;
   }
