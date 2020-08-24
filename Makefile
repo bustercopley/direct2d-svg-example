@@ -9,7 +9,9 @@ LDLIBS=-ld2d1 -lwindowscodecs -lole32
 CXX=g++
 
 all: $(OUTPUT)
-clean: ; -del $(OUTPUT) $(PROGRAM) $(OBJECTS)
+
+clean:
+	-del $(OUTPUT) $(PROGRAM) $(OBJECTS)
 
 %.png: $(PROGRAM)
 	$(PROGRAM) $@
