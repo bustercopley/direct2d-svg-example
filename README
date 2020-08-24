@@ -1,7 +1,8 @@
 Example program using ID2D1DeviceContext5 and ID2D1SvgDocument.
 
-Creates a PNG file with a white stripe on a purple background.
-Also renders an SVG image (a white circle), if enabled.
+Create a bitmap and paint a white stripe on a purple background, with Direct2D.
+Render an SVG image (a white circle), if enabled.
+Save the bitmap to a PNG file.
 
 Build commands (in Windows Command Prompt):
 
