@@ -12,7 +12,7 @@ With MinGW-W64 g++, without SVG (note the -DNO_SVG option):
    g++ -o d2d-test.exe -municode -O0 -ggdb3 -Wall -Wextra -Werror d2d-test.o -ld2d1 -lwindowscodecs -lole32 -lshlwapi
    d2d-test.exe output.png circle.svg
 
-With MinGW-W64 g++, with SVG (doesn't compile with current release):
+With MinGW-W64 g++, with SVG:
 
    g++ -c -o d2d-test.o -municode -O0 -ggdb3 -Wall -Wextra -Werror d2d-test.cpp
    g++ -o d2d-test.exe -municode -O0 -ggdb3 -Wall -Wextra -Werror d2d-test.o -ld2d1 -lwindowscodecs -lole32 -lshlwapi
